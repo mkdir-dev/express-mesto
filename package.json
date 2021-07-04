@@ -30,6 +30,7 @@
   },
   "dependencies": {
     "eslint-config-airbnb-base": "^14.2.1",
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "mongoose": "^5.13.2"
   }
 }
