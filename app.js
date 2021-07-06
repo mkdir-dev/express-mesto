@@ -19,7 +19,8 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/users', express.json());
+app.use('/', express.json());
 app.use('/users', require('./routes/users'));
+app.use('/cards', require('./routes/cards'));
 
 app.listen(PORT);
