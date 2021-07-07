@@ -16,9 +16,8 @@ module.exports.createCard = (req, res) => {
 
 module.exports.deleteCard = (req, res) => {
   const { cardId } = req.params;
-  console.log({ cardId });
 
-  Card.findByIdAndRemove({ cardId })
+  Card.findByIdAndRemove(cardId)
     .then((card) => res.status(200).send({ data: card }))
     .catch((err) => res.status(500).send({ message: err.message }));
 };
