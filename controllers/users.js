@@ -21,7 +21,7 @@ module.exports.getUsers = (req, res) => {
     });
 };
 
-module.exports.getUser = (req, res) => {
+module.exports.getUserById = (req, res) => {
   const { userId } = req.body;
 
   User.findById({ userId })
@@ -64,7 +64,10 @@ module.exports.createUser = (req, res) => {
 module.exports.updateUser = (req, res) => {
   const { name, about } = req.body;
 
-  User.findByIdAndUpdate(req.user._id, { name, about })
+  User.findByIdAndUpdate(
+    req.user._id,
+    { name, about },
+  )
     .orFail(new Error('NotFound'))
     .then((user) => res.status(SUCCESS_OK).send({ data: user }))
     .catch((err) => {
@@ -87,7 +90,10 @@ module.exports.updateUser = (req, res) => {
 module.exports.updateAvatar = (req, res) => {
   const { avatar } = req.body;
 
-  User.findByIdAndUpdate(req.user._id, { avatar })
+  User.findByIdAndUpdate(
+    req.user._id,
+    { avatar },
+  )
     .orFail(new Error('NotFound'))
     .then((user) => res.status(SUCCESS_OK).send({ data: user }))
     .catch((err) => {
