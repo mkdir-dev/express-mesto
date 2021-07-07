@@ -29,3 +29,11 @@ module.exports.updateUser = (req, res) => {
     .then((user) => res.status(200).send({ data: user }))
     .catch((err) => res.status(500).send({ message: err.message }));
 };
+
+module.exports.updateAvatar = (req, res) => {
+  const { avatar } = req.body;
+
+  User.findByIdAndUpdate(req.user._id, { avatar })
+    .then((user) => res.status(200).send({ data: user }))
+    .catch((err) => res.status(500).send({ message: err.message }));
+};
