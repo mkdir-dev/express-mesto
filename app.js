@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const helmet = require('helmet');
 
 const {
   NOT_FOUND,
@@ -20,6 +21,8 @@ app.get('*', (req, res) => {
     message: 'Запрашиваемый ресурс не найден',
   });
 });
+
+app.use(helmet());
 
 app.use((req, res, next) => {
   req.user = {
