@@ -10,7 +10,7 @@ module.exports.getCards = (req, res) => {
   Card.find({})
     .then((cards) => res.status(SUCCESS_OK).send({ data: cards }))
     .catch((err) => {
-      if (err.name === 'CastError') {
+      if (err.message === 'CastError') {
         return res.status(ERROR_CODE).send({
           message: 'Переданы некорректные данные',
         });
@@ -31,7 +31,7 @@ module.exports.createCard = (req, res) => {
   })
     .then((card) => res.status(SUCCESS_OK).send({ data: card }))
     .catch((err) => {
-      if (err.name === 'CastError') {
+      if (err.message === 'CastError') {
         return res.status(ERROR_CODE).send({
           message: 'Переданы некорректные данные при создании карточки',
         });
@@ -49,12 +49,12 @@ module.exports.deleteCard = (req, res) => {
     .orFail(new Error('NotFound'))
     .then((card) => res.status(SUCCESS_OK).send({ data: card }))
     .catch((err) => {
-      if (err.name === 'CastError') {
+      if (err.message === 'CastError') {
         return res.status(ERROR_CODE).send({
           message: 'Переданы некорректные данные при удалении карточки',
         });
       }
-      if (err.name === 'NotFound') {
+      if (err.message === 'NotFound') {
         return res.status(NOT_FOUND).send({
           message: 'Запрашиваемая карточка пользователя не найдена',
         });
@@ -76,12 +76,12 @@ module.exports.likeCard = (req, res) => {
     .orFail(new Error('NotFound'))
     .then((card) => res.status(SUCCESS_OK).send({ data: card }))
     .catch((err) => {
-      if (err.name === 'CastError') {
+      if (err.message === 'CastError') {
         return res.status(ERROR_CODE).send({
           message: 'Переданы некорректные данные отметки "Мне нравится"',
         });
       }
-      if (err.name === 'NotFound') {
+      if (err.message === 'NotFound') {
         return res.status(NOT_FOUND).send({
           message: 'Запрашиваемая карточка пользователя не найдена',
         });
@@ -103,12 +103,12 @@ module.exports.dislikeCard = (req, res) => {
     .orFail(new Error('NotFound'))
     .then((card) => res.status(SUCCESS_OK).send({ data: card }))
     .catch((err) => {
-      if (err.name === 'CastError') {
+      if (err.message === 'CastError') {
         return res.status(ERROR_CODE).send({
           message: 'Переданы некорректные данные отметки "Мне нравится"',
         });
       }
-      if (err.name === 'NotFound') {
+      if (err.message === 'NotFound') {
         return res.status(NOT_FOUND).send({
           message: 'Запрашиваемая карточка пользователя не найдена',
         });

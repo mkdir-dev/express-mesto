@@ -10,7 +10,7 @@ module.exports.getUsers = (req, res) => {
   User.find({})
     .then((users) => res.status(SUCCESS_OK).send({ data: users }))
     .catch((err) => {
-      if (err.name === 'CastError') {
+      if (err.message === 'CastError') {
         return res.status(ERROR_CODE).send({
           message: 'Переданы некорректные данные',
         });
@@ -28,12 +28,12 @@ module.exports.getUserById = (req, res) => {
     .orFail(new Error('NotFound'))
     .then((user) => res.status(SUCCESS_OK).send({ data: user }))
     .catch((err) => {
-      if (err.name === 'CastError') {
+      if (err.message === 'CastError') {
         return res.status(ERROR_CODE).send({
           message: 'Переданы некорректные данные пользователя',
         });
       }
-      if (err.name === 'NotFound') {
+      if (err.message === 'NotFound') {
         return res.status(NOT_FOUND).send({
           message: 'Запрашиваемый пользователь не найден',
         });
@@ -50,7 +50,7 @@ module.exports.createUser = (req, res) => {
   User.create({ name, about, avatar })
     .then((user) => res.status(SUCCESS_OK).send({ data: user }))
     .catch((err) => {
-      if (err.name === 'CastError') {
+      if (err.message === 'CastError') {
         return res.status(ERROR_CODE).send({
           message: 'Переданы некорректные данные при создании пользователя',
         });
@@ -67,16 +67,17 @@ module.exports.updateUser = (req, res) => {
   User.findByIdAndUpdate(
     req.user._id,
     { name, about },
+    { new: true, runValidators: true },
   )
     .orFail(new Error('NotFound'))
     .then((user) => res.status(SUCCESS_OK).send({ data: user }))
     .catch((err) => {
-      if (err.name === 'CastError') {
+      if (err.message === 'CastError') {
         return res.status(ERROR_CODE).send({
           message: 'Переданы некорректные данные при обновлении данных о пользователе',
         });
       }
-      if (err.name === 'NotFound') {
+      if (err.message === 'NotFound') {
         return res.status(NOT_FOUND).send({
           message: 'Запрашиваемый пользователь не найден',
         });
@@ -93,16 +94,17 @@ module.exports.updateAvatar = (req, res) => {
   User.findByIdAndUpdate(
     req.user._id,
     { avatar },
+    { new: true, runValidators: true },
   )
     .orFail(new Error('NotFound'))
     .then((user) => res.status(SUCCESS_OK).send({ data: user }))
     .catch((err) => {
-      if (err.name === 'CastError') {
+      if (err.message === 'CastError') {
         return res.status(ERROR_CODE).send({
           message: 'Переданы некорректные данные при обновлении аватара',
         });
       }
-      if (err.name === 'NotFound') {
+      if (err.message === 'NotFound') {
         return res.status(NOT_FOUND).send({
           message: 'Запрашиваемый пользователь не найден',
         });
