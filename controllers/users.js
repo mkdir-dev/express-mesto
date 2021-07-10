@@ -50,8 +50,12 @@ module.exports.createUser = (req, res) => {
   User.create({ name, about, avatar })
     .then((user) => res.status(SUCCESS_OK).send({ data: user }))
     .catch((err) => {
-      if (err.name === 'CastError') {
-        return res.status(ERROR_CODE).send({
+      if (err.name === 'ValidationError') {
+        res.status(ERROR_CODE).send({
+          message: 'Ошибка валидации при создании пользователя',
+        });
+      } else if (err.name === 'CastError') {
+        res.status(ERROR_CODE).send({
           message: 'Переданы некорректные данные при создании пользователя',
         });
       }

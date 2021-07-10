@@ -31,8 +31,12 @@ module.exports.createCard = (req, res) => {
   })
     .then((card) => res.status(SUCCESS_OK).send({ data: card }))
     .catch((err) => {
-      if (err.name === 'CastError') {
-        return res.status(ERROR_CODE).send({
+      if (err.name === 'ValidationError') {
+        res.status(ERROR_CODE).send({
+          message: 'Ошибка валидации при создании карточки',
+        });
+      } else if (err.name === 'CastError') {
+        res.status(ERROR_CODE).send({
           message: 'Переданы некорректные данные при создании карточки',
         });
       }
