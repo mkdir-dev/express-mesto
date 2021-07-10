@@ -22,7 +22,7 @@ module.exports.getUsers = (req, res) => {
 };
 
 module.exports.getUserById = (req, res) => {
-  const { userId } = req.body;
+  const { userId } = req.params;
 
   User.findById({ userId })
     .orFail(new Error('NotFound'))
