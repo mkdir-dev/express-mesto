@@ -24,7 +24,7 @@ module.exports.getUsers = (req, res) => {
 module.exports.getUserById = (req, res) => {
   const { userId } = req.params;
 
-  User.findById({ userId })
+  User.findById(userId)
     .orFail(new Error('NotFound'))
     .then((user) => res.status(SUCCESS_OK).send({ data: user }))
     .catch((err) => {
