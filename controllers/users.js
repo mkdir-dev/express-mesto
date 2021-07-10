@@ -10,7 +10,7 @@ module.exports.getUsers = (req, res) => {
   User.find({})
     .then((users) => res.status(SUCCESS_OK).send({ data: users }))
     .catch((err) => {
-      if (err.message === 'CastError') {
+      if (err.name === 'CastError') {
         return res.status(ERROR_CODE).send({
           message: 'Переданы некорректные данные',
         });
@@ -28,7 +28,7 @@ module.exports.getUserById = (req, res) => {
     .orFail(new Error('NotFound'))
     .then((user) => res.status(SUCCESS_OK).send({ data: user }))
     .catch((err) => {
-      if (err.message === 'CastError') {
+      if (err.name === 'CastError') {
         return res.status(ERROR_CODE).send({
           message: 'Переданы некорректные данные пользователя',
         });
@@ -50,7 +50,7 @@ module.exports.createUser = (req, res) => {
   User.create({ name, about, avatar })
     .then((user) => res.status(SUCCESS_OK).send({ data: user }))
     .catch((err) => {
-      if (err.message === 'CastError') {
+      if (err.name === 'CastError') {
         return res.status(ERROR_CODE).send({
           message: 'Переданы некорректные данные при создании пользователя',
         });
@@ -72,7 +72,7 @@ module.exports.updateUser = (req, res) => {
     .orFail(new Error('NotFound'))
     .then((user) => res.status(SUCCESS_OK).send({ data: user }))
     .catch((err) => {
-      if (err.message === 'CastError') {
+      if (err.name === 'CastError') {
         return res.status(ERROR_CODE).send({
           message: 'Переданы некорректные данные при обновлении данных о пользователе',
         });
@@ -99,7 +99,7 @@ module.exports.updateAvatar = (req, res) => {
     .orFail(new Error('NotFound'))
     .then((user) => res.status(SUCCESS_OK).send({ data: user }))
     .catch((err) => {
-      if (err.message === 'CastError') {
+      if (err.name === 'CastError') {
         return res.status(ERROR_CODE).send({
           message: 'Переданы некорректные данные при обновлении аватара',
         });

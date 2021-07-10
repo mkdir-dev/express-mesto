@@ -10,7 +10,7 @@ module.exports.getCards = (req, res) => {
   Card.find({})
     .then((cards) => res.status(SUCCESS_OK).send({ data: cards }))
     .catch((err) => {
-      if (err.message === 'CastError') {
+      if (err.name === 'CastError') {
         return res.status(ERROR_CODE).send({
           message: 'Переданы некорректные данные',
         });
@@ -31,7 +31,7 @@ module.exports.createCard = (req, res) => {
   })
     .then((card) => res.status(SUCCESS_OK).send({ data: card }))
     .catch((err) => {
-      if (err.message === 'CastError') {
+      if (err.name === 'CastError') {
         return res.status(ERROR_CODE).send({
           message: 'Переданы некорректные данные при создании карточки',
         });
@@ -49,7 +49,7 @@ module.exports.deleteCard = (req, res) => {
     .orFail(new Error('NotFound'))
     .then((card) => res.status(SUCCESS_OK).send({ data: card }))
     .catch((err) => {
-      if (err.message === 'CastError') {
+      if (err.name === 'CastError') {
         return res.status(ERROR_CODE).send({
           message: 'Переданы некорректные данные при удалении карточки',
         });
@@ -76,7 +76,7 @@ module.exports.likeCard = (req, res) => {
     .orFail(new Error('NotFound'))
     .then((card) => res.status(SUCCESS_OK).send({ data: card }))
     .catch((err) => {
-      if (err.message === 'CastError') {
+      if (err.name === 'CastError') {
         return res.status(ERROR_CODE).send({
           message: 'Переданы некорректные данные отметки "Мне нравится"',
         });
@@ -103,7 +103,7 @@ module.exports.dislikeCard = (req, res) => {
     .orFail(new Error('NotFound'))
     .then((card) => res.status(SUCCESS_OK).send({ data: card }))
     .catch((err) => {
-      if (err.message === 'CastError') {
+      if (err.name === 'CastError') {
         return res.status(ERROR_CODE).send({
           message: 'Переданы некорректные данные отметки "Мне нравится"',
         });
