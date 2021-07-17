@@ -32,6 +32,7 @@
     "eslint-config-airbnb-base": "^14.2.1",
     "express": "^4.17.1",
     "helmet": "^4.6.0",
-    "mongoose": "^5.13.2"
+    "mongoose": "^5.13.2",
+    "validator": "^13.6.0"
   }
 }
