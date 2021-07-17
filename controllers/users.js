@@ -3,6 +3,7 @@ const User = require('../models/user');
 const {
   SUCCESS_OK,
   ERROR_CODE,
+  ERROR_AUTH,
   NOT_FOUND,
   ERROR_SERVER,
 } = require('../utils/status');
@@ -121,6 +122,29 @@ module.exports.updateAvatar = (req, res) => {
       }
       return res.status(ERROR_SERVER).send({
         message: 'Ошибка сервера. Ошибка по-умолчанию',
+      });
+    });
+};
+
+module.exports.login = (req, res) => {
+  const { email, password } = req.body;
+
+  User.findOne({ email })
+    .then((user) => {
+      if (!user) {
+        Promise.reject(new Error('Неправильные почта или пароль'));
+      }
+      return bcrypt.compare(password, user.password);
+    })
+    .then((matched) => {
+      if (!matched) {
+        Promise.reject(new Error('Неправильные почта или пароль'));
+      }
+      res.send({ message: 'Всё верно!' });
+    })
+    .catch(() => {
+      res.status(ERROR_AUTH).send({
+        message: 'Ошибка аутентификации',
       });
     });
 };
