@@ -29,6 +29,7 @@
     "webpack-cli": "^4.7.2"
   },
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "eslint-config-airbnb-base": "^14.2.1",
     "express": "^4.17.1",
     "helmet": "^4.6.0",
