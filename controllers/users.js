@@ -1,3 +1,4 @@
+const bcrypt = require('bcryptjs');
 const User = require('../models/user');
 const {
   SUCCESS_OK,
@@ -45,24 +46,29 @@ module.exports.getUserById = (req, res) => {
 };
 
 module.exports.createUser = (req, res) => {
-  const { name, about, avatar } = req.body;
+  const {
+    name, about, avatar, email, password,
+  } = req.body;
 
-  User.create({ name, about, avatar })
-    .then((user) => res.status(SUCCESS_OK).send({ data: user }))
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res.status(ERROR_CODE).send({
-          message: 'Ошибка валидации при создании пользователя',
+  bcrypt.hash(password, 10)
+    .then((hash) => User.create({
+      name, about, avatar, email, password: hash,
+    })
+      .then((user) => res.status(SUCCESS_OK).send({ data: user }))
+      .catch((err) => {
+        if (err.name === 'ValidationError') {
+          res.status(ERROR_CODE).send({
+            message: 'Ошибка валидации при создании пользователя',
+          });
+        } else if (err.name === 'CastError') {
+          res.status(ERROR_CODE).send({
+            message: 'Переданы некорректные данные при создании пользователя',
+          });
+        }
+        return res.status(ERROR_SERVER).send({
+          message: 'Ошибка сервера. Ошибка по-умолчанию',
         });
-      } else if (err.name === 'CastError') {
-        res.status(ERROR_CODE).send({
-          message: 'Переданы некорректные данные при создании пользователя',
-        });
-      }
-      return res.status(ERROR_SERVER).send({
-        message: 'Ошибка сервера. Ошибка по-умолчанию',
-      });
-    });
+      }));
 };
 
 module.exports.updateUser = (req, res) => {
