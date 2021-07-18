@@ -9,7 +9,7 @@ const {
   SUCCESS_OK,
 } = require('../errors/errorStatuses');
 
-module.exports.getCards = (req, res) => {
+module.exports.getCards = (req, res, next) => {
   Card.find({})
     .then((cards) => res.status(SUCCESS_OK).send({ data: cards }))
     .catch((err) => {
@@ -17,10 +17,11 @@ module.exports.getCards = (req, res) => {
         throw new BadRequestError('Переданы некорректные данные');
       }
       throw new InternalServerError('Ошибка сервера. Ошибка по-умолчанию');
-    });
+    })
+    .catch(next);
 };
 
-module.exports.createCard = (req, res) => {
+module.exports.createCard = (req, res, next) => {
   const { name, link } = req.body;
 
   Card.create({
@@ -36,10 +37,11 @@ module.exports.createCard = (req, res) => {
         throw new BadRequestError('Переданы некорректные данные при создании карточки');
       }
       throw new InternalServerError('Ошибка сервера. Ошибка по-умолчанию');
-    });
+    })
+    .catch(next);
 };
 
-module.exports.deleteCard = (req, res) => {
+module.exports.deleteCard = (req, res, next) => {
   const { cardId } = req.params;
   const { userId } = req.user;
 
@@ -63,10 +65,11 @@ module.exports.deleteCard = (req, res) => {
         throw new NotFoundError('Запрашиваемая карточка пользователя не найдена');
       }
       throw new InternalServerError('Ошибка сервера. Ошибка по-умолчанию');
-    });
+    })
+    .catch(next);
 };
 
-module.exports.likeCard = (req, res) => {
+module.exports.likeCard = (req, res, next) => {
   const { cardId } = req.params;
 
   Card.findByIdAndUpdate(
@@ -84,10 +87,11 @@ module.exports.likeCard = (req, res) => {
         throw new NotFoundError('Запрашиваемая карточка пользователя не найдена');
       }
       throw new InternalServerError('Ошибка сервера. Ошибка по-умолчанию');
-    });
+    })
+    .catch(next);
 };
 
-module.exports.dislikeCard = (req, res) => {
+module.exports.dislikeCard = (req, res, next) => {
   const { cardId } = req.params;
 
   Card.findByIdAndUpdate(
@@ -105,5 +109,6 @@ module.exports.dislikeCard = (req, res) => {
         throw new NotFoundError('Запрашиваемая карточка пользователя не найдена');
       }
       throw new InternalServerError('Ошибка сервера. Ошибка по-умолчанию');
-    });
+    })
+    .catch(next);
 };

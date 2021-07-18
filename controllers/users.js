@@ -13,7 +13,7 @@ const {
   SUCCESS_OK,
 } = require('../errors/errorStatuses');
 
-module.exports.getUsers = (req, res) => {
+module.exports.getUsers = (req, res, next) => {
   User.find({})
     .then((users) => res.status(SUCCESS_OK).send({ data: users }))
     .catch((err) => {
@@ -21,10 +21,11 @@ module.exports.getUsers = (req, res) => {
         throw new BadRequestError('Переданы некорректные данные');
       }
       throw new InternalServerError('Ошибка сервера. Ошибка по-умолчанию');
-    });
+    })
+    .catch(next);
 };
 
-module.exports.getUserById = (req, res) => {
+module.exports.getUserById = (req, res, next) => {
   const { userId } = req.params;
 
   User.findById(userId)
@@ -38,10 +39,11 @@ module.exports.getUserById = (req, res) => {
         throw new NotFoundError('Запрашиваемый пользователь не найден');
       }
       throw new InternalServerError('Ошибка сервера. Ошибка по-умолчанию');
-    });
+    })
+    .catch(next);
 };
 
-module.exports.createUser = (req, res) => {
+module.exports.createUser = (req, res, next) => {
   const {
     name, about, avatar, email, password,
   } = req.body;
@@ -61,10 +63,11 @@ module.exports.createUser = (req, res) => {
           throw new ConflictError('Пользователь с таким Email уже зарегистрирован'); // !!!
         }
         throw new InternalServerError('Ошибка сервера. Ошибка по-умолчанию');
-      }));
+      }))
+    .catch(next);
 };
 
-module.exports.updateUser = (req, res) => {
+module.exports.updateUser = (req, res, next) => {
   const { name, about } = req.body;
 
   User.findByIdAndUpdate(
@@ -82,10 +85,11 @@ module.exports.updateUser = (req, res) => {
         throw new NotFoundError('Запрашиваемый пользователь не найден');
       }
       throw new InternalServerError('Ошибка сервера. Ошибка по-умолчанию');
-    });
+    })
+    .catch(next);
 };
 
-module.exports.updateAvatar = (req, res) => {
+module.exports.updateAvatar = (req, res, next) => {
   const { avatar } = req.body;
 
   User.findByIdAndUpdate(
@@ -103,10 +107,11 @@ module.exports.updateAvatar = (req, res) => {
         throw new NotFoundError('Запрашиваемый пользователь не найден');
       }
       throw new InternalServerError('Ошибка сервера. Ошибка по-умолчанию');
-    });
+    })
+    .catch(next);
 };
 
-module.exports.login = (req, res) => {
+module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
 
   return User.findUserByCredentials(email, password)
@@ -125,7 +130,8 @@ module.exports.login = (req, res) => {
     })
     .catch(() => {
       throw new UnauthorizedError('Ошибка аутентификации');
-    });
+    })
+    .catch(next);
 };
 
 module.exports.getCurrentUserInfo = (req, res, next) => {
