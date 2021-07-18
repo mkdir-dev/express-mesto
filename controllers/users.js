@@ -129,18 +129,24 @@ module.exports.updateAvatar = (req, res) => {
 module.exports.login = (req, res) => {
   const { email, password } = req.body;
 
-  User.findOne({ email })
-    .then((user) => {
-      if (!user) {
-        Promise.reject(new Error('Неправильные почта или пароль'));
-      }
-      return bcrypt.compare(password, user.password);
-    })
-    .then((matched) => {
-      if (!matched) {
-        Promise.reject(new Error('Неправильные почта или пароль'));
-      }
-      res.send({ message: 'Всё верно!' });
+  /*
+    User.findOne({ email })
+      .then((user) => {
+        if (!user) {
+          Promise.reject(new Error('Неправильные почта или пароль'));
+        }
+        return bcrypt.compare(password, user.password);
+      })
+      .then((matched) => {
+        if (!matched) {
+          Promise.reject(new Error('Неправильные почта или пароль'));
+        }
+        res.send({ message: 'Всё верно!' });
+      })
+      */
+  return User.findUserByCredentials(email, password)
+    .then((/* user */) => {
+      // создать jwt token
     })
     .catch(() => {
       res.status(ERROR_AUTH).send({
