@@ -2,6 +2,7 @@ const Card = require('../models/card');
 const {
   SUCCESS_OK,
   ERROR_CODE,
+  ERROR_FORBIDDEN,
   NOT_FOUND,
   ERROR_SERVER,
 } = require('../utils/status');
@@ -48,10 +49,22 @@ module.exports.createCard = (req, res) => {
 
 module.exports.deleteCard = (req, res) => {
   const { cardId } = req.params;
+  const { userId } = req.user;
 
-  Card.findByIdAndRemove(cardId)
+  Card.findById(cardId)
     .orFail(new Error('NotFound'))
-    .then((card) => res.status(SUCCESS_OK).send({ data: card }))
+    .then((card) => {
+      if (card.owner._id.toString() === userId) {
+        Card.findByIdAndRemove(cardId)
+          .then(() => res.status(SUCCESS_OK).send({
+            message: 'Удаление карточки прошло успешно',
+          }));
+      } else {
+        res.status(ERROR_FORBIDDEN).send({
+          message: 'Вы не можете удалять чужие карточки',
+        });
+      }
+    })
     .catch((err) => {
       if (err.name === 'CastError') {
         return res.status(ERROR_CODE).send({
