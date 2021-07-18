@@ -3,6 +3,8 @@ const mongoose = require('mongoose');
 const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
 
+const { login, createUser } = require('./controllers/users');
+
 const {
   NOT_FOUND,
 } = require('./utils/status');
@@ -19,6 +21,9 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
 
 app.use(helmet());
 app.use(cookieParser());
+
+app.post('/signin', login);
+app.post('/signup', createUser);
 
 app.use((req, res, next) => {
   req.user = {
