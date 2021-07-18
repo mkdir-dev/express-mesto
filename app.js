@@ -4,6 +4,9 @@ const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
 
 const { login, createUser } = require('./controllers/users');
+const auth = require('./middlewares/auth');
+const usersRoutes = require('./routes/users');
+const cardsRoutes = require('./routes/cards');
 
 const {
   NOT_FOUND,
@@ -19,23 +22,15 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
   useFindAndModify: false,
 });
 
+app.use('/', express.json());
 app.use(helmet());
 app.use(cookieParser());
 
 app.post('/signin', login);
 app.post('/signup', createUser);
 
-app.use((req, res, next) => {
-  req.user = {
-    _id: '60e2dc0816ab1cc273caf797',
-  };
-
-  next();
-});
-
-app.use('/', express.json());
-app.use('/users', require('./routes/users'));
-app.use('/cards', require('./routes/cards'));
+app.use('/users', auth, usersRoutes);
+app.use('/cards', auth, cardsRoutes);
 
 app.get('*', (req, res) => {
   res.status(NOT_FOUND).send({
