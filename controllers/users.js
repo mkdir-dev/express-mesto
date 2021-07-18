@@ -1,27 +1,26 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
+const NotFoundError = require('../errors/NotFoundError');
+const BadRequestError = require('../errors/BadRequestError');
+const UnauthorizedError = require('../errors/UnauthorizedError');
+const InternalServerError = require('../errors/UnauthorizedError');
+const ConflictError = require('../errors/ConflictError');
+
 const User = require('../models/user');
+
 const {
   SUCCESS_OK,
-  ERROR_CODE,
-  ERROR_AUTH,
-  NOT_FOUND,
-  ERROR_SERVER,
-} = require('../utils/status');
+} = require('../errors/errorStatuses');
 
 module.exports.getUsers = (req, res) => {
   User.find({})
     .then((users) => res.status(SUCCESS_OK).send({ data: users }))
     .catch((err) => {
       if (err.name === 'CastError') {
-        return res.status(ERROR_CODE).send({
-          message: 'Переданы некорректные данные',
-        });
+        throw new BadRequestError('Переданы некорректные данные');
       }
-      return res.status(ERROR_SERVER).send({
-        message: 'Ошибка сервера. Ошибка по-умолчанию',
-      });
+      throw new InternalServerError('Ошибка сервера. Ошибка по-умолчанию');
     });
 };
 
@@ -33,18 +32,12 @@ module.exports.getUserById = (req, res) => {
     .then((user) => res.status(SUCCESS_OK).send({ data: user }))
     .catch((err) => {
       if (err.name === 'CastError') {
-        return res.status(ERROR_CODE).send({
-          message: 'Переданы некорректные данные пользователя',
-        });
+        throw new BadRequestError('Переданы некорректные данные пользователя');
       }
       if (err.message === 'NotFound') {
-        return res.status(NOT_FOUND).send({
-          message: 'Запрашиваемый пользователь не найден',
-        });
+        throw new NotFoundError('Запрашиваемый пользователь не найден');
       }
-      return res.status(ERROR_SERVER).send({
-        message: 'Ошибка сервера. Ошибка по-умолчанию',
-      });
+      throw new InternalServerError('Ошибка сервера. Ошибка по-умолчанию');
     });
 };
 
@@ -60,17 +53,14 @@ module.exports.createUser = (req, res) => {
       .then((user) => res.status(SUCCESS_OK).send({ data: user }))
       .catch((err) => {
         if (err.name === 'ValidationError') {
-          res.status(ERROR_CODE).send({
-            message: 'Ошибка валидации при создании пользователя',
-          });
+          throw new BadRequestError('Ошибка валидации при создании пользователя');
         } else if (err.name === 'CastError') {
-          res.status(ERROR_CODE).send({
-            message: 'Переданы некорректные данные при создании пользователя',
-          });
+          throw new BadRequestError('Переданы некорректные данные при создании пользователя');
         }
-        return res.status(ERROR_SERVER).send({
-          message: 'Ошибка сервера. Ошибка по-умолчанию',
-        });
+        if (err.name === 'MongoError' && err.code === 11000) {
+          throw new ConflictError('Пользователь с таким Email уже зарегистрирован'); // !!!
+        }
+        throw new InternalServerError('Ошибка сервера. Ошибка по-умолчанию');
       }));
 };
 
@@ -86,18 +76,12 @@ module.exports.updateUser = (req, res) => {
     .then((user) => res.status(SUCCESS_OK).send({ data: user }))
     .catch((err) => {
       if (err.name === 'CastError') {
-        return res.status(ERROR_CODE).send({
-          message: 'Переданы некорректные данные при обновлении данных о пользователе',
-        });
+        throw new BadRequestError('Переданы некорректные данные при обновлении данных о пользователе');
       }
       if (err.message === 'NotFound') {
-        return res.status(NOT_FOUND).send({
-          message: 'Запрашиваемый пользователь не найден',
-        });
+        throw new NotFoundError('Запрашиваемый пользователь не найден');
       }
-      return res.status(ERROR_SERVER).send({
-        message: 'Ошибка сервера. Ошибка по-умолчанию',
-      });
+      throw new InternalServerError('Ошибка сервера. Ошибка по-умолчанию');
     });
 };
 
@@ -113,18 +97,12 @@ module.exports.updateAvatar = (req, res) => {
     .then((user) => res.status(SUCCESS_OK).send({ data: user }))
     .catch((err) => {
       if (err.name === 'CastError') {
-        return res.status(ERROR_CODE).send({
-          message: 'Переданы некорректные данные при обновлении аватара',
-        });
+        throw new BadRequestError('Переданы некорректные данные при обновлении аватара');
       }
       if (err.message === 'NotFound') {
-        return res.status(NOT_FOUND).send({
-          message: 'Запрашиваемый пользователь не найден',
-        });
+        throw new NotFoundError('Запрашиваемый пользователь не найден');
       }
-      return res.status(ERROR_SERVER).send({
-        message: 'Ошибка сервера. Ошибка по-умолчанию',
-      });
+      throw new InternalServerError('Ошибка сервера. Ошибка по-умолчанию');
     });
 };
 
@@ -146,9 +124,7 @@ module.exports.login = (req, res) => {
       }).send({ message: 'Aутентификация прошла успешнo!' });
     })
     .catch(() => {
-      res.status(ERROR_AUTH).send({
-        message: 'Ошибка аутентификации',
-      });
+      throw new UnauthorizedError('Ошибка аутентификации');
     });
 };
 

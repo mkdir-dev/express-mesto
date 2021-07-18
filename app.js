@@ -8,9 +8,7 @@ const auth = require('./middlewares/auth');
 const usersRoutes = require('./routes/users');
 const cardsRoutes = require('./routes/cards');
 
-const {
-  NOT_FOUND,
-} = require('./utils/status');
+const NotFoundError = require('./errors/NotFoundError');
 
 const { PORT = 3000 } = process.env;
 const app = express();
@@ -32,10 +30,8 @@ app.post('/signup', createUser);
 app.use('/users', auth, usersRoutes);
 app.use('/cards', auth, cardsRoutes);
 
-app.get('*', (req, res) => {
-  res.status(NOT_FOUND).send({
-    message: 'Запрашиваемый ресурс не найден',
-  });
+app.get('*', () => {
+  throw new NotFoundError('Запрашиваемый ресурс не найден');
 });
 
 app.listen(PORT);
