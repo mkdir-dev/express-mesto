@@ -151,3 +151,11 @@ module.exports.login = (req, res) => {
       });
     });
 };
+
+module.exports.getCurrentUserInfo = (req, res, next) => {
+  User.findById(res.user._id)
+    .then((userInfo) => {
+      res.status(SUCCESS_OK).send({ userInfo });
+    })
+    .catch(next);
+};
