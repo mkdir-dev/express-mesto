@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
+const cookieParser = require('cookie-parser');
 
 const {
   NOT_FOUND,
@@ -17,6 +18,7 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
 });
 
 app.use(helmet());
+app.use(cookieParser());
 
 app.use((req, res, next) => {
   req.user = {

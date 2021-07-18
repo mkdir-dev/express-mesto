@@ -30,6 +30,7 @@
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "cookie-parser": "^1.4.5",
     "eslint-config-airbnb-base": "^14.2.1",
     "express": "^4.17.1",
     "helmet": "^4.6.0",
