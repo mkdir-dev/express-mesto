@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+// eslint-disable-next-line no-unused-vars
+const validator = require('validator');
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -17,11 +19,23 @@ const userSchema = new mongoose.Schema({
   avatar: {
     type: String,
     default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
+    validate: {
+      validator(value) {
+        return /https?:\/\/[w{3}.]?[\S^а-яё]/gi.test(value);
+      },
+      message: 'Неверная ссылка на аватар',
+    },
   },
   email: {
     type: String,
     required: true,
     unique: true,
+    validate: {
+      validator(value) {
+        return validator.isEmail(value);
+      },
+      message: 'Неверная почта',
+    },
   },
   password: {
     type: String,
