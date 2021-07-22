@@ -54,7 +54,14 @@ module.exports.createUser = (req, res, next) => {
     .then((hash) => User.create({
       name, about, avatar, email, password: hash,
     })
-      .then((user) => res.status(SUCCESS_OK).send({ data: user }))
+      .then((user) => res.status(SUCCESS_OK).send({
+        data: {
+          name: user.name,
+          about: user.about,
+          avatar: user.avatar,
+          email: user.email,
+        },
+      }))
       .catch((err) => {
         if (err.name === 'ValidationError') {
           throw new BadRequestError('Ошибка валидации при создании пользователя');
