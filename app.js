@@ -20,6 +20,8 @@ const NotFoundError = require('./errors/NotFoundError');
 // eslint-disable-next-line import/order
 const { errors } = require('celebrate');
 
+const { requestLogger, errorLogger } = require('./middlewares/logger');
+
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
@@ -40,12 +42,15 @@ app.use(limiter);
 app.use('/', express.json());
 app.use(helmet());
 app.use(cookieParser());
+app.use(requestLogger);
 
 app.post('/signin', signinValidation, login);
 app.post('/signup', signupValidation, createUser);
 
 app.use('/users', auth, usersRoutes);
 app.use('/cards', auth, cardsRoutes);
+
+app.use(errorLogger);
 
 app.use(errors());
 
