@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const cors = require('cors');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
@@ -20,6 +21,7 @@ const NotFoundError = require('./errors/NotFoundError');
 // eslint-disable-next-line import/order
 const { errors } = require('celebrate');
 
+const { requestCors } = require('./middlewares/cors');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 const limiter = rateLimit({
@@ -29,6 +31,9 @@ const limiter = rateLimit({
 
 const { PORT = 3000 } = process.env;
 const app = express();
+
+app.use(cors());
+app.use(requestCors);
 
 mongoose.connect('mongodb://localhost:27017/mestodb', {
   useUnifiedTopology: true,
